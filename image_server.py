@@ -14,6 +14,8 @@ class ImageServer():
         try:
             db.session.add(i)
             db.session.commit()
-        except OperationalError:
+        except:
             db.session.rollback()
+        finally:
+            db.session.close()
         return i.url
