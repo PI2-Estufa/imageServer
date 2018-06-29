@@ -1,6 +1,7 @@
 from nameko.rpc import rpc
 import db
 from db import Image
+from psycopg2 import OperationalError
 
 
 class ImageServer():
@@ -10,6 +11,9 @@ class ImageServer():
     def receive_image(self, name):
         i = Image()
         i.url = name
-        db.session.add(i)
-        db.session.commit()
+        try:
+            db.session.add(i)
+            db.session.commit()
+        except OperationalError:
+            db.session.rollback()
         return i.url
